@@ -12,20 +12,24 @@
 
       <section class="dashboard-grid">
         <div class="stat-card">
-          <div class="card-icon blue"><i class='bx bx-category'></i></div>
-          <div class="card-info">
-            <h3>Categories</h3>
-            <p class="stat-value">12</p>
+          <div class="card-icon blue">
+              <i class='bx bx-category'></i>
           </div>
-        </div>
+          <div class="card-info">
+              <h3>Categories</h3>
+              <p class="stat-value">{{ categories }}</p>
+          </div>
+      </div>
 
-        <div class="stat-card">
-          <div class="card-icon purple"><i class='bx bx-box'></i></div>
-          <div class="card-info">
-            <h3>Active Products</h3>
-            <p class="stat-value">148</p>
+      <div class="stat-card">
+          <div class="card-icon purple">
+              <i class='bx bx-box'></i>
           </div>
-        </div>
+          <div class="card-info">
+              <h3>Active Products</h3>
+              <p class="stat-value">{{ products }}</p>
+          </div>
+      </div>
 
         <div class="stat-card">
           <div class="card-icon green"><i class='bx bx-cart'></i></div>
@@ -42,6 +46,11 @@
 <script setup>
 // Importing layout companion element smoothly
 import Usernavbar from './Usernavbar.vue';
+defineProps({
+  products: Number,
+  categories: Number,
+});
+
 </script>
 
 <style scoped>

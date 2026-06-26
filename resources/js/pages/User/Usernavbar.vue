@@ -6,7 +6,7 @@
     </div>
 
     <nav class="sidebar-menu">
-      <Link href="/vendor/dashboard" class="menu-item" :class="{ 'active': $page.url === '/vendor/dashboard' }">
+      <Link href="/user/dashboard" class="menu-item" :class="{ 'active': $page.url === '/vendor/dashboard' }">
         <i class='bx bx-grid-alt'></i>
         <span>Dashboard</span>
       </Link>
