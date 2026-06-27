@@ -21,10 +21,7 @@
         <span>Products</span>
       </Link>
 
-      <Link href="/orders" class="menu-item" :class="{ 'active': $page.url.startsWith('/orders') }">
-        <i class='bx bx-cart'></i>
-        <span>Orders</span>
-      </Link>
+       
     </nav>
 
     <div class="sidebar-footer">

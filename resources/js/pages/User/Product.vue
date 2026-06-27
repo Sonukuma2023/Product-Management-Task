@@ -56,7 +56,10 @@
             <tr v-for="product in products" :key="product.id" class="table-data-row">
               <td>
                 <div class="image-preview-wrapper">
-                  <img :src="'/' + product.image" alt="Catalog Preview" />
+                  <img
+                      :src="product.image ? '/' + product.image : '/asset/product/images/default.png'"
+                      alt="Product"
+                  />
                 </div>
               </td>
               <td>
@@ -103,7 +106,7 @@
       </div>
     </main>
 
-    <div v-if="isModalOpen" class="modal-backdrop-layer" @click.self="closeModal">
+    <div v-if="isModalOpen" class="modal-backdrop-layer">
       <div class="modal-form-window">
         <div class="modal-form-header">
           <h3>{{ isEditMode ? 'Modify Active Product File' : 'Register New Inventory Asset' }}</h3>
@@ -162,18 +165,35 @@
             </div>
 
             <div class="form-field-block span-12">
-              <label>Upload Product Catalog Image <span v-if="!isEditMode" class="required-flag">*</span></label>
-              <div class="file-upload-drag-zone">
-                <input type="file" @input="form.image = $event.target.files[0]" accept="image/*" class="ghost-file-input" />
-                <div class="upload-zone-prompt">
-                  <span class="upload-cloud-icon">📷</span>
-                  <span class="upload-main-prompt-text">Click here to attach or swap product display image file</span>
-                  <span class="upload-subtext-constraints">Supports JPEG, PNG, WEBP files up to 2MB allocation limit.</span>
-                </div>
-              </div>
-              <span v-if="form.errors.image" class="field-error-msg-txt mt-1">{{ form.errors.image }}</span>
-              <p v-if="isEditMode" class="field-info-help-txt">Keep item input field empty to leave the existing database record thumbnail untouched.</p>
-            </div>
+    <label>Upload Product</label>
+
+    <div class="file-upload-drag-zone">
+        <input
+            type="file"
+            @change="form.image = $event.target.files[0] || null"
+            accept=".jpg,.jpeg,.png,.webp"
+            class="ghost-file-input"
+        />
+
+        <div class="upload-zone-prompt">
+            <span class="upload-cloud-icon">📷</span>
+            <span class="upload-main-prompt-text">
+                Click here to upload a product image (Optional)
+            </span>
+            <span class="upload-subtext-constraints">
+                Supports JPEG, PNG, JPG and WEBP files up to 2MB.
+            </span>
+        </div>
+    </div>
+
+    <span v-if="form.errors.image" class="field-error-msg-txt">
+        {{ form.errors.image }}
+    </span>
+
+    <p v-if="isEditMode" class="field-info-help-txt">
+        Leave this empty to keep the existing image.
+    </p>
+</div>
           </div>
 
           <div class="modal-action-footer-tray">
@@ -255,7 +275,7 @@ const submitForm = () => {
   if (!form.price || form.price <= 0) clientErrors.price = 'Please input a valid price valuation number.';
   if (form.category_id === '') clientErrors.category_id = 'Please select a product category.';
   if (form.quantity === '' || form.quantity < 0) clientErrors.quantity = 'Stock cannot be a negative value.';
-  if (!isEditMode.value && !form.image) clientErrors.image = 'An original image attachment file upload is mandatory.';
+   
 
   if (Object.keys(clientErrors).length > 0) {
     form.setError(clientErrors);
