@@ -2,7 +2,7 @@
   <div class="auth-wrapper">
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
-    
+
     <div class="auth-card">
       <div class="auth-visual">
         <div class="visual-content">
@@ -23,90 +23,109 @@
         </div>
 
         <form @submit.prevent="submit" class="auth-form">
+
+          <!-- NAME -->
           <div class="input-group">
             <label>Full Name</label>
             <div class="input-wrapper">
               <i class='bx bx-user'></i>
-              <input 
-                v-model="form.name" 
-                type="text"  
-                :class="{'has-error': shouldShowError('name')}"
+              <input
+                v-model="form.name"
+                type="text"
+                :class="{ 'has-error': shouldShowError('name') }"
                 @blur="touched.name = true"
                 placeholder="John Doe"
               >
             </div>
-            <span v-if="shouldShowError('name')" class="error-msg">{{ form.errors.name }}</span>
+            <span v-if="shouldShowError('name')" class="error-msg">
+              {{ form.errors.name }}
+            </span>
           </div>
 
+          <!-- EMAIL -->
           <div class="input-group">
             <label>Email address</label>
             <div class="input-wrapper">
               <i class='bx bx-envelope'></i>
-              <input 
-                v-model="form.email" 
-                type="email"  
-                :class="{'has-error': shouldShowError('email')}"
+              <input
+                v-model="form.email"
+                type="email"
+                :class="{ 'has-error': shouldShowError('email') }"
                 @blur="touched.email = true"
                 placeholder="name@company.com"
               >
             </div>
-            <span v-if="shouldShowError('email')" class="error-msg">{{ form.errors.email }}</span>
+            <span v-if="shouldShowError('email')" class="error-msg">
+              {{ form.errors.email }}
+            </span>
           </div>
 
+          <!-- PHONE -->
           <div class="input-group">
             <label>Phone Number</label>
             <div class="input-wrapper">
               <i class='bx bx-phone'></i>
-              <input 
-                v-model="form.phone" 
-                type="text"  
-                :class="{'has-error': shouldShowError('phone')}"
+              <input
+                v-model="form.phone"
+                type="text"
+                :class="{ 'has-error': shouldShowError('phone') }"
                 @blur="touched.phone = true"
-                placeholder="+1 (555) 000-0000"
-              >
+                @input="form.phone = form.phone.replace(/\D/g, '').slice(0, 10)"
+                maxlength="10"
+                placeholder="Enter 10 digit phone number"
+              />
             </div>
-            <span v-if="shouldShowError('phone')" class="error-msg">{{ form.errors.phone }}</span>
+            <span v-if="shouldShowError('phone')" class="error-msg">
+              {{ form.errors.phone }}
+            </span>
           </div>
 
+          <!-- PASSWORD -->
           <div class="input-group">
             <label>Password</label>
             <div class="input-wrapper">
               <i class='bx bx-lock-alt'></i>
-              <input 
-                v-model="form.password" 
-                type="password"  
-                :class="{'has-error': shouldShowError('password')}"
+              <input
+                v-model="form.password"
+                type="password"
+                :class="{ 'has-error': shouldShowError('password') }"
                 @blur="touched.password = true"
                 placeholder="••••••••"
               >
             </div>
-            <span v-if="shouldShowError('password')" class="error-msg">{{ form.errors.password }}</span>
+            <span v-if="shouldShowError('password')" class="error-msg">
+              {{ form.errors.password }}
+            </span>
           </div>
 
+          <!-- ADDRESS -->
           <div class="input-group">
             <label>Address</label>
             <div class="input-wrapper">
               <i class='bx bx-map'></i>
-              <input 
-                v-model="form.address" 
-                type="text"  
-                :class="{'has-error': shouldShowError('address')}"
+              <input
+                v-model="form.address"
+                type="text"
+                :class="{ 'has-error': shouldShowError('address') }"
                 @blur="touched.address = true"
                 placeholder="123 Business St, City"
               >
             </div>
-            <span v-if="shouldShowError('address')" class="error-msg">{{ form.errors.address }}</span>
+            <span v-if="shouldShowError('address')" class="error-msg">
+              {{ form.errors.address }}
+            </span>
           </div>
 
           <button type="submit" class="btn-primary" :disabled="form.processing">
-            <span v-if="form.processing" class="spinner"></span>
+            <span v-if="form.processing">Loading...</span>
             <span v-else>Register Now</span>
           </button>
         </form>
 
         <div class="form-footer">
           <p>
-            Already have an account? <Link href="/login" class="text-link accent">Sign in instead</Link>
+            Already have an account?
+            <Link href="/login" class="text-link accent">Sign in instead</Link>
           </p>
         </div>
       </div>
@@ -137,40 +156,41 @@ const touched = reactive({
 const wasSubmitted = ref(false);
 
 const shouldShowError = (field) => {
-  // Returns true if there is an error string AND the form was submitted or field was touched
   return !!(form.errors[field] && (touched[field] || wasSubmitted.value));
 };
 
 const submit = () => {
   wasSubmitted.value = true;
-  form.clearErrors(); // Reset any previous error messages
+  form.clearErrors();
 
-  // Local Client-Side Empty Check
   let hasEmptyFields = false;
   const localErrors = {};
 
-  // Check required fields (omitting address since it's nullable in your controller)
   const requiredFields = ['name', 'email', 'phone', 'password'];
-  
+
   requiredFields.forEach((field) => {
     if (!form[field] || form[field].trim() === '') {
       localErrors[field] = `The ${field} field is required.`;
-      touched[field] = true; // Force lookups to register it as interacted with
+      touched[field] = true;
       hasEmptyFields = true;
     }
   });
 
-  // If local empty fields are found, inject them directly into Inertia's form error object
   if (hasEmptyFields) {
     form.setError(localErrors);
-    return; // Stop the submission here so it doesn't even hit the server empty
+    return;
   }
 
-  // If fields aren't empty, proceed to send to Laravel backend
+  // ✅ PHONE VALIDATION (EXACT 10 DIGITS)
+  if (form.phone.trim().length !== 10) {
+    form.setError('phone', 'Phone number must be exactly 10 digits.');
+    touched.phone = true;
+    return;
+  }
+
   form.post('/register', {
     onFinish: () => form.reset('password'),
-    onError: (errors) => {
-      // If the backend returns validation errors (like 'email already taken')
+    onError: () => {
       Object.keys(touched).forEach(key => {
         touched[key] = true;
       });

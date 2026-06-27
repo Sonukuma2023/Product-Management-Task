@@ -9,15 +9,18 @@ use App\Models\Product;
 class UserControlller extends Controller
 {
    public function index(){
-        $products = Product::latest()->count();
-        $categories = Category::latest()->count();
+        $products = Product::where('user_id', auth()->id())
+    ->get();
+    $category = Category::where('user_id', auth()->id())->get();
+    $products = $products->count();
+     $categories = $category->count();
     
-        return Inertia::render('User/UserDashboard',compact('products','categories'));
+        return Inertia::render('User/UserDashboard',compact('products','categories',));
     }
 
     public function create(){
          
-    $categories = Category::latest()->get();
+    $categories = Category::where('user_id', auth()->id())->get();
     return Inertia::render('User/Usercategory',compact('categories'));
 
     }
@@ -28,7 +31,7 @@ class UserControlller extends Controller
             'name'        => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
-         
+         $validated['user_id'] = auth()->id();
         Category::create($validated);
 
         return back()->with('message', 'Category created successfully.');

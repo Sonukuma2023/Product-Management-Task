@@ -35,7 +35,7 @@
           <div class="card-icon green"><i class='bx bx-cart'></i></div>
           <div class="card-info">
             <h3>Total Orders</h3>
-            <p class="stat-value">43</p>
+            <p class="stat-value">0</p>
           </div>
         </div>
       </section>

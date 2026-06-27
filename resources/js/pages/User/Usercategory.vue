@@ -45,7 +45,7 @@
       </div>
     </main>
 
-    <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
+    <div v-if="isModalOpen" class="modal-overlay">
       <div class="modal-card">
         <div class="modal-header">
           <h3>{{ isEditMode ? 'Edit Category' : 'Add New Category' }}</h3>

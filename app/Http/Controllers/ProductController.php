@@ -12,10 +12,10 @@ class ProductController extends Controller
 {
    public function index()
 {
-    $products = Product::latest()->get();
-    $categories = Category::latest()->get();
-
-    // dd($categories); // You can check data here
+    $products = Product::where('user_id', auth()->id())
+    ->get();
+    $categories = Category::where('user_id', auth()->id())->get();
+     
 
     return Inertia::render('User/Product', [
         'products' => $products,
@@ -36,11 +36,23 @@ class ProductController extends Controller
         ]);
         $validated['user_id'] = auth()->id();
 
-        if ($request->hasFile('image')) {
+       if ($request->hasFile('image')) {
+
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('asset/product/images'), $filename);
+
+            $destination = public_path('asset/product/images');
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0777, true);
+            }
+
+            $file->move($destination, $filename);
+
             $validated['image'] = 'asset/product/images/' . $filename;
+
+        } else {
+            $validated['image'] = null;
         }
          
 
