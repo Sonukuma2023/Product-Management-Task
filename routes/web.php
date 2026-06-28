@@ -5,11 +5,19 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserControlller;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    
+    if (!Auth::id()) {
+        return Inertia::render('Auth/LoginComponent');
+    }
+
+    return redirect()->route('User/UserDashboard');
 });
+
+
 Route::post('/logout', function (Request $request) {
     Auth::logout();
 
