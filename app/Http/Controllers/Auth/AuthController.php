@@ -16,7 +16,6 @@ class AuthController extends Controller
         return Inertia::render('Auth/RegisterComponent');
     }
    public function post(Request $request) {
-    // 1. Validate incoming data
     $data = $request->validate([
         'name'     => 'required|string|max:255',
         'email'    => 'required|string|email|max:255|unique:users',
@@ -25,7 +24,7 @@ class AuthController extends Controller
         'address'  => 'nullable|string',
     ]);
 
-    // 2. Create the user record
+   
     User::create([
         'name'     => $data['name'],
         'email'    => $data['email'],
