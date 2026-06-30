@@ -20,14 +20,15 @@ class ProductObserver
      */
     public function updated(Product $product): void
     {
-        $threshold = 10;
+          
+        $threshold = 5;
         if ($product->quantity <= $threshold && $product->getOriginal('quantity') > $threshold) {
     
             $creator = $product->creator;
             if ($creator) {
                 $creator->notify(new LowStockAlert($product));
             }
-        }
+        } 
     }
 
     /**

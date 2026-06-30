@@ -6,6 +6,8 @@ use App\Http\Controllers\UserControlller;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TestMail;
 
 
 Route::get('/', function () {
@@ -63,4 +65,10 @@ Route::middleware(['auth', 'users'])->group(function () {
 
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])
         ->name('products.destroy');
+});
+
+Route::get('/test-email', function () {
+    Mail::to('rahulch82667@gmail.com')->send(new TestMail());
+
+    return 'Email sent successfully!';
 });
